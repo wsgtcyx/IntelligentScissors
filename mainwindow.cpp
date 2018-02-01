@@ -9,7 +9,7 @@
 
 #include <opencv2/highgui/highgui.hpp>
 using namespace cv;
-//using namespace std;
+
 QImage cvMat2QImage(const cv::Mat& mat)
 {
     // 8-bits unsigned, NO. OF CHANNELS = 1
