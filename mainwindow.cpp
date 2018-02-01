@@ -81,14 +81,14 @@ MainWindow::MainWindow(QWidget *parent) :
 
     //添加菜单项，添加动作
     QAction * pOpen = pFile->addAction("Open");
-
     connect(pOpen, SIGNAL(triggered()), this, SLOT(on_action_openFile_triggered()));
 
-    //pFile->addSeparator();
+    pFile->addSeparator();
+
     QAction * pClose = pFile->addAction("Close");
     connect(pClose,&QAction::triggered,[=]()
     {
-                this->close();
+        this->close();
     });
 }
 
