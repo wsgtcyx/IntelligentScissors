@@ -5,8 +5,12 @@
 #include <QPushButton>
 #include <QCursor>
 #include <QKeySequence>
-#include <opencv2/core/core.hpp>
+#include <QMenu>
+#include <QToolBar>
+#include <QStatusBar>
+#include <QMenuBar>
 
+#include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 using namespace cv;
 
@@ -65,7 +69,27 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     this->resize( QSize( 800, 600 ));
+
     ui->label->setScaledContents(true);
+
+
+    //菜单栏
+    QMenuBar *mBar = menuBar();
+
+    //添加菜单
+    QMenu *pFile = mBar->addMenu("File");
+
+    //添加菜单项，添加动作
+    QAction * pOpen = pFile->addAction("Open");
+
+    connect(pOpen, SIGNAL(triggered()), this, SLOT(on_action_openFile_triggered()));
+
+    //pFile->addSeparator();
+    QAction * pClose = pFile->addAction("Close");
+    connect(pClose,&QAction::triggered,[=]()
+    {
+                this->close();
+    });
 }
 
 MainWindow::~MainWindow()
@@ -73,16 +97,14 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::on_pushButton_clicked()
+
+void MainWindow::on_action_openFile_triggered()
 {
     QString fileName = QFileDialog::getOpenFileName(this,tr("Open Image"),".",tr("Image File(*.png *.jpg *.jpeg *.bmp)"));
-
     image = cv::imread(fileName.toLatin1().data());
     QImage img = cvMat2QImage(image);
 
     ui->label->setPixmap(QPixmap::fromImage(img));
     ui->label->resize(ui->label->pixmap()->size());
 }
-
-
 

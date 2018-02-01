@@ -6,38 +6,33 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>605</width>
+    <width>581</width>
     <height>467</height>
    </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>24</pointsize>
+   </font>
   </property>
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPushButton" name="pushButton">
-    <property name="geometry">
-     <rect>
-      <x>20</x>
-      <y>40</y>
-      <width>113</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>PushButton</string>
-    </property>
-   </widget>
    <widget class="QLabel" name="label">
     <property name="geometry">
      <rect>
-      <x>210</x>
-      <y>40</y>
-      <width>341</width>
-      <height>321</height>
+      <x>9</x>
+      <y>5</y>
+      <width>571</width>
+      <height>391</height>
      </rect>
     </property>
+    <property name="autoFillBackground">
+     <bool>true</bool>
+    </property>
     <property name="text">
-     <string/>
+     <string>picture</string>
     </property>
    </widget>
   </widget>
@@ -46,9 +41,18 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>605</width>
+     <width>581</width>
      <height>22</height>
     </rect>
+   </property>
+   <property name="autoFillBackground">
+    <bool>true</bool>
+   </property>
+   <property name="defaultUp">
+    <bool>true</bool>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>true</bool>
    </property>
   </widget>
   <widget class="QToolBar" name="mainToolBar">
