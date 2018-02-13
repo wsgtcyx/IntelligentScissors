@@ -8,7 +8,7 @@ The project detail is in [6000C Homepage](https://home.cse.ust.hk/~cktang/msbd60
 Due to the intranet's limitation, you can click the [Washington CSE 455](https://courses.cs.washington.edu/courses/cse455/03wi/projects/project1/web/project1.htm) for temporary reference, which is quite similar.
 
 ### 2. Fantastic show(automatically extract the hat out)
-![](https://raw.githubusercontent.com/wsgtcyx/wsgtcyx.github.io/master/img/intelligent scissors/dynamic.gif)
+![image](https://raw.githubusercontent.com/wsgtcyx/wsgtcyx.github.io/master/img/intelligent scissors/dynamic.gif)
 
 ### 3. Develop environment
 Develop Environment: Qt5 + Opencv3
