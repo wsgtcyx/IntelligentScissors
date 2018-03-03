@@ -25,10 +25,16 @@ DEFINES += QT_DEPRECATED_WARNINGS
 
 SOURCES += \
         main.cpp \
-        mainwindow.cpp
+        mainwindow.cpp \
+    fibheap.cpp \
+    NNode.cpp \
+    algorithm_implement.cpp \
+    cv_process.cpp \
+    action.cpp
 
 HEADERS += \
-        mainwindow.h
+        mainwindow.h \
+    fibheap.h
 
 FORMS += \
         mainwindow.ui
@@ -40,4 +46,15 @@ INCLUDEPATH +=/usr/local/include
 # The following lines tells Qmake to use pkg-config for opencv
 QT_CONFIG -= no-pkg-config
 CONFIG  += link_pkgconfig
+
 PKGCONFIG += opencv
+
+DISTFILES += \
+    fibtest.opt \
+    fibtest.dsp \
+    fibtest.dsw \
+    fibtest.ncb \
+    desktop.ini \
+    fibtest.001 \
+    fibtest.plg \
+    readme.asc

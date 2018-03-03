@@ -1,110 +1,86 @@
 #include "mainwindow.h"
+#include "fibheap.h"
 #include "ui_mainwindow.h"
-#include <QDebug>
-#include <QAction>
-#include <QPushButton>
-#include <QCursor>
-#include <QKeySequence>
-#include <QMenu>
-#include <QToolBar>
-#include <QStatusBar>
-#include <QMenuBar>
 
 #include <opencv2/core/core.hpp>
 #include <opencv2/highgui/highgui.hpp>
 using namespace cv;
-
-QImage cvMat2QImage(const cv::Mat& mat)
-{
-    // 8-bits unsigned, NO. OF CHANNELS = 1
-    if(mat.type() == CV_8UC1)
-    {
-        QImage image(mat.cols, mat.rows, QImage::Format_Indexed8);
-        // Set the color table (used to translate colour indexes to qRgb values)
-        image.setColorCount(256);
-        for(int i = 0; i < 256; i++)
-        {
-            image.setColor(i, qRgb(i, i, i));
-        }
-        // Copy input Mat
-        uchar *pSrc = mat.data;
-        for(int row = 0; row < mat.rows; row ++)
-        {
-            uchar *pDest = image.scanLine(row);
-            memcpy(pDest, pSrc, mat.cols);
-            pSrc += mat.step;
-        }
-        return image;
-    }
-    // 8-bits unsigned, NO. OF CHANNELS = 3
-    else if(mat.type() == CV_8UC3)
-    {
-        // Copy input Mat
-        const uchar *pSrc = (const uchar*)mat.data;
-        // Create QImage with same dimensions as input Mat
-        QImage image(pSrc, mat.cols, mat.rows, mat.step, QImage::Format_RGB888);
-        return image.rgbSwapped();
-    }
-}
-cv::Mat QImage2cvMat(QImage image)
-{
-    cv::Mat mat;
-
-    switch(image.format())
-    {
-    case QImage::Format_RGB888:
-        mat = cv::Mat(image.height(), image.width(), CV_8UC3, (void*)image.constBits(), image.bytesPerLine());
-        cv::cvtColor(mat, mat, CV_BGR2RGB);
-        break;
-    case QImage::Format_Indexed8:
-        mat = cv::Mat(image.height(), image.width(), CV_8UC1, (void*)image.constBits(), image.bytesPerLine());
-        break;
-    }
-    return mat;
-}
+using namespace std;
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    this->resize( QSize( 800, 600 ));
 
-    ui->label->setScaledContents(true);
-
-
-    //菜单栏
-    QMenuBar *mBar = menuBar();
-
-    //添加菜单
-    QMenu *pFile = mBar->addMenu("File");
-
-    //添加菜单项，添加动作
-    QAction * pOpen = pFile->addAction("Open");
-    connect(pOpen, SIGNAL(triggered()), this, SLOT(on_action_openFile_triggered()));
-
-    pFile->addSeparator();
-
-    QAction * pClose = pFile->addAction("Close");
-    connect(pClose,&QAction::triggered,[=]()
-    {
-        this->close();
-    });
+    initial_ui();
+    ui->label->installEventFilter(this);
+    ui->menuBar->installEventFilter(this);
 }
-
 MainWindow::~MainWindow()
 {
     delete ui;
 }
 
 
-void MainWindow::on_action_openFile_triggered()
+bool MainWindow::eventFilter(QObject *obj, QEvent *event)
 {
-    QString fileName = QFileDialog::getOpenFileName(this,tr("Open Image"),".",tr("Image File(*.png *.jpg *.jpeg *.bmp)"));
-    image = cv::imread(fileName.toLatin1().data());
-    QImage img = cvMat2QImage(image);
+    if(qobject_cast<QLabel*>(obj)==ui->label &&event->type() == QEvent::MouseMove)
+    {
+        return false;
+    }
 
-    ui->label->setPixmap(QPixmap::fromImage(img));
-    ui->label->resize(ui->label->pixmap()->size());
+    return false;
+
+}
+
+void MainWindow::initial_ui()
+{
+    this->resize( QSize( 2000, 2000 ));
+    //---设置当前窗体对鼠标追踪，默认为false，false表示不追踪
+    this->setMouseTracking(true);
+    ui->centralWidget->setMouseTracking(true);
+    ui->label->setMouseTracking(true);
+    ui->label->setScaledContents(true);
+
+
+
+    //---显示鼠标移动时的实时位置
+    statusLabel = new QLabel();
+    statusLabel->setText("Real_time Position:");
+    statusLabel->setFixedWidth(300);
+
+    //---显示鼠标位置
+    mousePointLabel = new QLabel();
+    mousePointLabel->setText("");
+    mousePointLabel->setFixedWidth(300);
+
+    //---在状态栏增加控件
+    statusBar()->addPermanentWidget(statusLabel);
+    statusBar()->addPermanentWidget(mousePointLabel);
+
+
+    ui->statusBar->showMessage("Click File->Open to begin");
+}
+
+
+
+QPoint MainWindow::toRelativePos(QMouseEvent *e)
+{
+    QPoint labelPoint = ui->label->pos();
+    QPoint relativePos;
+    relativePos.setX(e->x()-labelPoint.x());
+    relativePos.setY(e->y()-labelPoint.y()-widthUpperEdge);
+    return relativePos;
+}
+
+bool MainWindow::judgeMouseInPic(QMouseEvent *e)
+{
+    QPoint relativePos=toRelativePos(e);
+    QSize labelSize= ui->label->size();
+    if (relativePos.x()>=0 && relativePos.x()<labelSize.width())
+        if(relativePos.y()>=0 && relativePos.y()<labelSize.height())
+            return true;
+    return false;
 }
 
